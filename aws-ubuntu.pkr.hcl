@@ -12,7 +12,7 @@ packer {
 source "amazon-ebs" "ubuntu" {
   ami_name      = "learn-packer-linux-aws-ubuntutest"
   instance_type = "t2.micro"
-  region        = "ap-south-1"
+  region        = "us-west-2"
   source_ami_filter {
     filters = {
       name                = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
