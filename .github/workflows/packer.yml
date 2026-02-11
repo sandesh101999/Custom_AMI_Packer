@@ -1,5 +1,4 @@
 name: Packer Build
-
 on:
   workflow_dispatch:
   pull_request:
@@ -14,6 +13,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Clean packer cache
+        run: |
+          rm -rf ~/.config/packer
+          rm -rf ~/.packer.d
+
+      - name: Show packer file
+        run: cat aws-ubuntu.pkr.hcl
+
+      - name: Init packer
+        run: packer init aws-ubuntu.pkr.hcl
+        
       - name: Checkout code
         uses: actions/checkout@v3
 
