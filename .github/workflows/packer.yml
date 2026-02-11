@@ -1,12 +1,13 @@
 name: Packer Build
 
 on:
-  #push:
-   # branches:
-    #  - master
+  workflow_dispatch:
   pull_request:
     branches:
       - master
+  #push:
+   # branches:
+    #  - master
 
 jobs:
   packer:
