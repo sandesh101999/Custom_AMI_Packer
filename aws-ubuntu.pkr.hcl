@@ -19,7 +19,7 @@ source "azure-arm" "ubuntu" {
   vm_size  = "Standard_B1s"
 
   # TEMP resource group for build VM
-  temporary_resource_group_name = "packer-temp-rg"
+  build_resource_group_name = "packer-temp-rg"
 
   os_type         = "Linux"
   image_publisher = "Canonical"
