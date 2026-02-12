@@ -28,8 +28,6 @@ source "azure-arm" "ubuntu" {
     created_by  = "packer"
   }
 
-  # Temporary resource group for build VM
-  build_resource_group_name = "packer-temp-rg"
 
   communicator = "ssh"
   ssh_username = "azureuser"
