@@ -1,12 +1,11 @@
 packer {
   required_plugins {
     amazon = {
-      version = ">= 1.8.0"
+      version = ">= 1.4.6"
       source  = "github.com/hashicorp/amazon"
     }
   }
 }
-
 source "amazon-ebs" "ubuntu" {
   ami_name      = "learn-packer-linux-aws-ubuntutest"
   instance_type = "t2.micro"
