@@ -1,34 +1,52 @@
 packer {
   required_plugins {
-    amazon = {
-      source  = "github.com/hashicorp/amazon"
-      version = ">= 1.6.0"
-
+    azure = {
+      version = ">= 1.3.0"
+      source  = "github.com/hashicorp/azure"
     }
   }
 }
 
+source "azure-arm" "ubuntu" {
 
-source "amazon-ebs" "ubuntu" {
-  ami_name      = "learn-packer-linux-aws-ubuntutest-1"
-  instance_type = "t2.micro"
-  region        = "us-west-2"
-  source_ami_filter {
-    filters = {
-      name                = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
-      root-device-type    = "ebs"
-      virtualization-type = "hvm"
-    }
-    most_recent = true
-    owners      = ["099720109477"]
+  # Azure auth comes from environment variables (GitHub secrets)
+
+  managed_image_name                = "learn-packer-ubuntu-image"
+  managed_image_resource_group_name = "packer-image-rg"
+
+  location = "Central India"
+  vm_size  = "Standard_B1s"
+
+  os_type         = "Linux"
+  image_publisher = "Canonical"
+  image_offer     = "0001-com-ubuntu-server-jammy"
+  image_sku       = "22_04-lts"
+  image_version   = "latest"
+
+  azure_tags = {
+    environment = "dev"
+    created_by  = "packer"
   }
-  ssh_username = "ubuntu"
+
+  # Temporary resource group for build VM
+  build_resource_group_name = "packer-temp-rg"
+
+  communicator = "ssh"
+  ssh_username = "azureuser"
 }
+
 build {
-  name = "learn-packer"
-  sources = [
-    "source.amazon-ebs.ubuntu"
-  ]
-}
+  name = "learn-packer-azure"
 
-#packer build -var-file="variables.pkrvars.hcl" .
+  sources = [
+    "source.azure-arm.ubuntu"
+  ]
+
+  # Optional provisioning
+  provisioner "shell" {
+    inline = [
+      "sudo apt-get update",
+      "sudo apt-get install -y nginx"
+    ]
+  }
+}
