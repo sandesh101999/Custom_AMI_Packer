@@ -22,7 +22,7 @@ source "azure-arm" "ubuntu" {
   image_sku       = "22_04-lts"
 
   location = "Central India"
-  vm_size  = "Standard_B1s"
+  vm_size  = "Standard_D2s_v3"
 
   azure_tags = {
     environment = "dev"
