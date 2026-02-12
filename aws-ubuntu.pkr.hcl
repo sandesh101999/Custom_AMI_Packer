@@ -1,57 +1,32 @@
 packer {
   required_plugins {
-    azure = {
-      source  = "github.com/hashicorp/azure"
-      version = "2.3.3"
+    amazon = {
+      version = ">= 1.2.8"
+      source  = "github.com/hashicorp/amazon"
     }
   }
 }
 
-source "azure-arm" "ubuntu" {
-
-  # -------- AUTH (from GitHub env vars) ----------
-  client_id       = env("ARM_CLIENT_ID")
-  client_secret   = env("ARM_CLIENT_SECRET")
-  subscription_id = env("ARM_SUBSCRIPTION_ID")
-  tenant_id       = env("ARM_TENANT_ID")
-
-  # -------- IMAGE OUTPUT ----------
-  managed_image_name                = "learn-packer-ubuntu-image"
-  managed_image_resource_group_name = "packer-image-rg"
-
-  # -------- BUILD SETTINGS ----------
-  build_resource_group_name = "packer-build-rg"
-  location                  = "Central India"
-  vm_size                   = "Standard_B1s"
-
-  # -------- SOURCE IMAGE ----------
-  os_type         = "Linux"
-  image_publisher = "Canonical"
-  image_offer     = "0001-com-ubuntu-server-jammy"
-  image_sku       = "22_04-lts"
-  image_version   = "latest"
-
-  # -------- SSH ----------
-  communicator = "ssh"
-  ssh_username = "azureuser"
-
-  azure_tags = {
-    environment = "dev"
-    created_by  = "packer"
+source "amazon-ebs" "ubuntu" {
+  ami_name      = "learn-packer-linux-aws-ubuntutest"
+  instance_type = "t2.micro"
+  region        = "ap-south-1"
+  source_ami_filter {
+    filters = {
+      name                = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
+      root-device-type    = "ebs"
+      virtualization-type = "hvm"
+    }
+    most_recent = true
+    owners      = ["099720109477"]
   }
+  ssh_username = "ubuntu"
 }
-
 build {
-  name = "learn-packer-azure"
-
+  name = "learn-packer"
   sources = [
-    "source.azure-arm.ubuntu"
+    "source.amazon-ebs.ubuntu"
   ]
-
-  provisioner "shell" {
-    inline = [
-      "sudo apt-get update",
-      "sudo apt-get install -y nginx"
-    ]
-  }
 }
+
+#packer build -var-file="variables.pkrvars.hcl" .
