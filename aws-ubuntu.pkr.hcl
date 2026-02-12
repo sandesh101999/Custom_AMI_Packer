@@ -14,8 +14,12 @@ source "azure-arm" "ubuntu" {
   managed_image_name                = "learn-packer-ubuntu-image"
   managed_image_resource_group_name = "packer-image-rg"
 
+
   location = "Central India"
   vm_size  = "Standard_B1s"
+
+  # TEMP resource group for build VM
+  temporary_resource_group_name = "packer-temp-rg"
 
   os_type         = "Linux"
   image_publisher = "Canonical"
