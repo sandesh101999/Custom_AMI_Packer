@@ -1,4 +1,4 @@
-packer {
+ packer {
   required_plugins {
     azure = {
       source  = "github.com/hashicorp/azure"
@@ -9,17 +9,11 @@ packer {
 
 source "azure-arm" "ubuntu" {
 
-  # Azure auth comes from environment variables (GitHub secrets)
-
   managed_image_name                = "learn-packer-ubuntu-image"
   managed_image_resource_group_name = "packer-image-rg"
 
-
   location = "Central India"
   vm_size  = "Standard_B1s"
-
-  # TEMP resource group for build VM
-  build_resource_group_name = "packer-temp-rg"
 
   os_type         = "Linux"
   image_publisher = "Canonical"
@@ -27,15 +21,10 @@ source "azure-arm" "ubuntu" {
   image_sku       = "22_04-lts"
   image_version   = "latest"
 
-  azure_tags = {
-    environment = "dev"
-    created_by  = "packer"
-  }
-
-
   communicator = "ssh"
   ssh_username = "azureuser"
 }
+
 
 build {
   name = "learn-packer-azure"
@@ -44,7 +33,6 @@ build {
     "source.azure-arm.ubuntu"
   ]
 
-  # Optional provisioning
   provisioner "shell" {
     inline = [
       "sudo apt-get update",
