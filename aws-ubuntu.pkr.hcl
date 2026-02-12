@@ -12,7 +12,6 @@ source "azure-arm" "ubuntu" {
   # Azure auth comes from environment variables (GitHub secrets)
 
   managed_image_name                = "learn-packer-ubuntu-image"
-  managed_image_resource_group_name = "packer-image-rg"
 
   location = "Central India"
   vm_size  = "Standard_B1s"
