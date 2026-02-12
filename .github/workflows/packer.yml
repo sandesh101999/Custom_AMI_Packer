@@ -1,17 +1,14 @@
-name: Packer Build Azure
+name: Packer Build Azure Image
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - master
 
 jobs:
   packer:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Install Packer
@@ -23,16 +20,25 @@ jobs:
           sudo mv packer /usr/local/bin/
           packer --version
 
-      - name: Set Azure credentials as env vars
-        run: |
-          echo "ARM_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_ENV
-          echo "ARM_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }}" >> $GITHUB_ENV
-          echo "ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
-          echo "ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
+      # Azure login using Service Principal
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Run Packer Build
+      # Export ARM variables for packer
+      - name: Export Azure credentials for Packer
         run: |
-          packer init aws-ubuntu.pkr.hcl
-          packer validate aws-ubuntu.pkr.hcl
-          packer fmt aws-ubuntu.pkr.hcl
-          packer build aws-ubuntu.pkr.hcl
+          echo "ARM_CLIENT_ID=${{ fromJson(secrets.AZURE_CREDENTIALS).clientId }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}" >> $GITHUB_ENV
+
+      - name: Packer Init
+        run: packer init azure-ubuntu.pkr.hcl
+
+      - name: Packer Validate
+        run: packer validate azure-ubuntu.pkr.hcl
+
+      - name: Packer Build
+        run: packer build azure-ubuntu.pkr.hcl
