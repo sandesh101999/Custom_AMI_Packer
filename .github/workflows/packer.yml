@@ -1,12 +1,9 @@
-name: Packer Build
+name: Packer Build Azure
+
 on:
-  workflow_dispatch:
   pull_request:
     branches:
       - master
-  #push:
-   # branches:
-    #  - master
 
 jobs:
   packer:
@@ -18,38 +15,23 @@ jobs:
 
       - name: Install Packer
         run: |
-         sudo apt-get update -y
-         sudo apt-get install -y unzip
-         curl -fsSL -o packer.zip https://releases.hashicorp.com/packer/1.15.0/packer_1.15.0_linux_amd64.zip
-         unzip packer.zip
-         sudo mv packer /usr/local/bin/
-         packer --version
+          sudo apt-get update -y
+          sudo apt-get install -y unzip
+          curl -fsSL -o packer.zip https://releases.hashicorp.com/packer/1.8.4/packer_1.8.4_linux_amd64.zip
+          unzip packer.zip
+          sudo mv packer /usr/local/bin/
+          packer --version
 
-
-          
-      - name: Clean packer cache
+      - name: Set Azure credentials as env vars
         run: |
-          rm -rf ~/.config/packer
-          rm -rf ~/.packer.d
-
-      - name: Show packer file
-        run: cat aws-ubuntu.pkr.hcl
-
-        
-      
-
-     
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: "us-west-2" # Optionally include this if you're using a specific region
+          echo "ARM_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
 
       - name: Run Packer Build
         run: |
-          packer init aws-ubuntu.pkr.hcl
-          packer validate aws-ubuntu.pkr.hcl
-          packer fmt aws-ubuntu.pkr.hcl
-          packer build aws-ubuntu.pkr.hcl
+          packer init azure-ubuntu.pkr.hcl
+          packer validate azure-ubuntu.pkr.hcl
+          packer fmt azure-ubuntu.pkr.hcl
+          packer build azure-ubuntu.pkr.hcl
