@@ -31,7 +31,7 @@ jobs:
 
       - name: Run Packer Build
         run: |
-          packer init azure-ubuntu.pkr.hcl
-          packer validate azure-ubuntu.pkr.hcl
-          packer fmt azure-ubuntu.pkr.hcl
-          packer build azure-ubuntu.pkr.hcl
+          packer init aws-ubuntu.pkr.hcl
+          packer validate aws-ubuntu.pkr.hcl
+          packer fmt aws-ubuntu.pkr.hcl
+          packer build aws-ubuntu.pkr.hcl
