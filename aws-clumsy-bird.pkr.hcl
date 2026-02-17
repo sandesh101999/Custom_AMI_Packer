@@ -12,7 +12,7 @@ packer {
 }
 
 source "amazon-ebs" "ubuntu" {
-  region                  = var.region
+  region                  = "us-east-1""
   instance_type           = "t2.micro"
   ssh_username            = "ubuntu"
   ami_name                = "custom-ami-{{timestamp}}"
@@ -20,7 +20,7 @@ source "amazon-ebs" "ubuntu" {
 
   source_ami_filter {
     filters = {
-      name                = "ubuntu/images/hvm-ssd/ubuntu-jammy-*"
+      name                = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
       root-device-type    = "ebs"
       virtualization-type = "hvm"
     }
