@@ -15,7 +15,9 @@ source "amazon-ebs" "ubuntu" {
   region                  = "us-east-1"
   instance_type           = "t2.micro"
   ssh_username            = "ubuntu"
-  ami_name                = "custom-ami-{{timestamp}}"
+  ami_name = "${var.ami_prefix}-${local.timestamp}"
+  tags     = var.tags
+
   associate_public_ip_address = true
 
   source_ami_filter {

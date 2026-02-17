@@ -1,6 +1,6 @@
 variable "ami_prefix" {
   type    = string
-  default = "my-clumsy-bird"
+  default = "sandesh-clumsy-bird"
 }
 
 variable "region" {
