@@ -22,12 +22,15 @@ jobs:
           sudo apt install ansible -y
 
       - name: Packer Init
+        working-directory: ansible
         run: packer init .
 
       - name: Packer Validate
+        working-directory: ansible
         run: packer validate .
 
       - name: Packer Build
+        working-directory: ansible
         run: packer build .
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
