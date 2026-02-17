@@ -15,7 +15,7 @@ variable "instance_type" {
 
 variable "ami_regions" {
   type    = list(string)
-  default = ["us-east-1"]
+  default = ["us-east-2"]
 }
 
 variable "ssh_username" {
