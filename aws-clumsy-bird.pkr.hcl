@@ -11,11 +11,6 @@ packer {
   }
 }
 
-variable "region" {
-  type    = string
-  default = "us-east-1"
-}
-
 source "amazon-ebs" "ubuntu" {
   region                  = var.region
   instance_type           = "t2.micro"
