@@ -9,13 +9,22 @@
       apt:
         update_cache: yes
 
-    - name: Install required packages
+    - name: Install base packages
       apt:
         name:
+          - curl
           - nginx
-          - nodejs
-          - npm
         state: present
+        update_cache: yes
+
+    - name: Add NodeSource repo
+      shell: curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+
+    - name: Install NodeJS (includes npm)
+      apt:
+        name: nodejs
+        state: present
+
 
     - name: Create app directory
       file:
