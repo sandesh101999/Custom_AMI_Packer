@@ -4,30 +4,40 @@
   become: true
 
   tasks:
+
     - name: Update apt
       apt:
         update_cache: yes
 
-    - name: Install nginx
+    - name: Install required packages
       apt:
-        name: nginx
+        name:
+          - nginx
+          - nodejs
+          - npm
         state: present
 
-    - name: Copy app source
+    - name: Create app directory
+      file:
+        path: /src/clumsy-bird
+        state: directory
+        mode: "0755"
+
+    - name: Copy application source
       copy:
-        src: clumsy-bird/
+        src: ../clumsy-bird/
         dest: /src/clumsy-bird/
         mode: "0755"
 
     - name: Copy launch script
       copy:
-        src: launch.sh
+        src: ../assets/launch.sh
         dest: /src/clumsy-bird/launch.sh
         mode: "0755"
 
-    - name: Copy systemd service file
+    - name: Copy systemd service
       copy:
-        src: clumsy-bird.service
+        src: ../assets/clumsy-bird.service
         dest: /etc/systemd/system/clumsy-bird.service
         mode: "0644"
 
@@ -36,6 +46,3 @@
 
     - name: Enable service
       command: systemctl enable clumsy-bird
-
-    - name: Start service
-      command: systemctl start clumsy-bird
