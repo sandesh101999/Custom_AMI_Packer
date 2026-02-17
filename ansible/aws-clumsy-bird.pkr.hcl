@@ -35,6 +35,6 @@ build {
   sources = ["source.amazon-ebs.ubuntu"]
 
   provisioner "ansible" {
-    playbook_file = "ansible/playbooks/playbook.yml"
+    playbook_file = "playbooks/playbook.yml"
   }
 }
